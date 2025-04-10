@@ -41,4 +41,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Void> handleUsernameEmptyException() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
+
+    @ExceptionHandler(InternalServerException.class)
+    public ResponseEntity<Void> handleResponseStatusException() {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 }
