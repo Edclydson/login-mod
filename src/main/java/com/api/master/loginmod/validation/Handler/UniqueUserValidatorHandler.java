@@ -1,6 +1,7 @@
 package com.api.master.loginmod.validation.Handler;
 
 import com.api.master.loginmod.exception.custom.EmailAlreadyinUseException;
+import com.api.master.loginmod.exception.custom.UsernameAlreadyinUseException;
 import com.api.master.loginmod.model.dto.CreateUserDTO;
 import com.api.master.loginmod.validation.Email.EmailAlreadyInUse;
 import com.api.master.loginmod.validation.Handler.Interfaces.UniqueUserValidator;
@@ -19,13 +20,12 @@ public class UniqueUserValidatorHandler implements UniqueUserValidator {
     }
 
     @Override
-    public boolean userIsNotUnique(CreateUserDTO createUserDTO) {
+    public void userIsUnique(CreateUserDTO createUserDTO) { // trocar nome para userIsUnique
         if(emailAlreadyInUse.isEmailAreadyUsedCheck(createUserDTO.email())){
             throw new EmailAlreadyinUseException();
         }
         if(usernameAlreadyInUse.isUsernameAlreadyInUseCheck(createUserDTO.userName())){
-            throw new EmailAlreadyinUseException();
+            throw new UsernameAlreadyinUseException();
         }
-        return true;
     }
 }

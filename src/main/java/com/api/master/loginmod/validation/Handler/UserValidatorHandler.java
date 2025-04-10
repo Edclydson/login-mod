@@ -1,5 +1,6 @@
 package com.api.master.loginmod.validation.Handler;
 
+import com.api.master.loginmod.exception.custom.*;
 import com.api.master.loginmod.model.dto.CreateUserDTO;
 import com.api.master.loginmod.validation.Email.EmailEmpty;
 import com.api.master.loginmod.validation.Email.EmailValid;
@@ -30,11 +31,21 @@ public class UserValidatorHandler implements UserValidator {
 
 
     @Override
-    public boolean userIsValid(CreateUserDTO createUserDTO) {
-        return !usernameEmpty.isUsernameEmptyCheck(createUserDTO.userName()) &&
-                !emailEmpty.isEmailEmptyCheck(createUserDTO.email()) &&
-                emailValid.isEmailValidCheck(createUserDTO.email()) &&
-                passwordRequirements.isPasswordFillRequirementsCheck(createUserDTO.userPassword()) &&
-                !passwordEmpty.isPasswordEmptyCheck(createUserDTO.userPassword());
+    public void userIsValid(CreateUserDTO createUserDTO) {
+        if(usernameEmpty.isUsernameEmptyCheck(createUserDTO.userName())){
+            throw new UsernameEmptyException();
+        }
+        if(emailEmpty.isEmailEmptyCheck(createUserDTO.email())){
+            throw new EmptyEmailException();
+        }
+        if(!emailValid.isEmailValidCheck(createUserDTO.email())){
+            throw new InvalidEmailException();
+        }
+        if(!passwordRequirements.isPasswordFillRequirementsCheck(createUserDTO.userPassword())){
+            throw new PasswordRequirementsException();
+        }
+        if(passwordEmpty.isPasswordEmptyCheck(createUserDTO.userPassword())){
+            throw new PasswordEmptyException();
+        }
     }
 }
