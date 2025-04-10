@@ -1,8 +1,9 @@
 package com.api.master.loginmod.controller;
 
 import com.api.master.loginmod.model.dto.CreateUserDTO;
-import com.api.master.loginmod.service.impl.UserServiceImpl;
-import com.api.master.loginmod.util.Validations;
+import com.api.master.loginmod.service.User.UserRegistrationService;
+import com.api.master.loginmod.validation.Handler.UserValidatorHandler;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,21 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/register")
 public class UserController {
 
-    private final UserServiceImpl userService;
-    private final Validations checker;
+    private final UserValidatorHandler userValidator;
+    private final UserRegistrationService userRegistrationService;
 
-    public UserController(UserServiceImpl userService, Validations checker) {
-        this.userService = userService;
-        this.checker = checker;
+    public UserController(UserValidatorHandler userValidator, UserRegistrationService userRegistrationService) {
+        this.userValidator = userValidator;
+        this.userRegistrationService = userRegistrationService;
     }
 
     @PostMapping
-    public ResponseEntity<Void> registerUser(@RequestBody CreateUserDTO createUserDTO) {
-        if(checker.isEmailValid(createUserDTO.email()) &&
-                checker.passwordRequirements(createUserDTO.userPassword()) &&
-                !checker.passwordEmpty(createUserDTO.userPassword())) {
-            return userService.saveUser(createUserDTO);
-        }
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+    public ResponseEntity<Void> registerUser(@RequestBody @Valid CreateUserDTO createUserDTO) {
+        userValidator.userIsValid(createUserDTO);
+        userRegistrationService.saveNewUser(createUserDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
