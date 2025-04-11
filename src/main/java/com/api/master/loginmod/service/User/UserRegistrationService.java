@@ -38,7 +38,7 @@ public class UserRegistrationService implements UserService {
             userRepository.save(user);
         }
         catch (ResponseStatusException e) {
-            throw new InternalServerException();
+            throw new InternalServerException(e);
         }
     }
 }
