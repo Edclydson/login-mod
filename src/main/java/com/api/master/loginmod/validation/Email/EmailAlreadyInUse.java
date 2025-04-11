@@ -17,7 +17,7 @@ public class EmailAlreadyInUse implements isEmailAlreadyUsed {
     }
 
     @Override
-    public boolean isEmailAreadyUsedCheck(String email) {
+    public boolean isEmailAlreadyUsedCheck(String email) {
         Optional<User> baseEmail = userRepository.findByEmail(email);
         return baseEmail.isPresent();
     }

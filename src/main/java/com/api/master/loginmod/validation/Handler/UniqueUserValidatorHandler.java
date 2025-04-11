@@ -20,8 +20,8 @@ public class UniqueUserValidatorHandler implements UniqueUserValidator {
     }
 
     @Override
-    public void userIsUnique(CreateUserDTO createUserDTO) { // trocar nome para userIsUnique
-        if(emailAlreadyInUse.isEmailAreadyUsedCheck(createUserDTO.email())){
+    public void userIsUnique(CreateUserDTO createUserDTO) {
+        if(emailAlreadyInUse.isEmailAlreadyUsedCheck(createUserDTO.email())){
             throw new EmailAlreadyinUseException();
         }
         if(usernameAlreadyInUse.isUsernameAlreadyInUseCheck(createUserDTO.userName())){

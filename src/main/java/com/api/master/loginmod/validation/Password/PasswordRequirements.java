@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class PasswordRequirements implements isPasswordFillRequirements {
     @Override
     public boolean isPasswordFillRequirementsCheck(String password) {
-        String passwordRegex = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])(?=.{8,}).*$";
+        String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#&()–[{}]:;',?/*~$^+=<>]).{8,}$";
         return password.matches(passwordRegex);
     }
 }
