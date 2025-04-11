@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 @ActiveProfiles("test")
 class UserRegistrationServiceTest {
 
+    @InjectMocks
     UserRegistrationService userRegistrationServiceMocked;
     @Mock
     CreateUserDTO userMocked;
@@ -45,45 +47,40 @@ class UserRegistrationServiceTest {
     @DisplayName("Should register a user successfully")
     void saveNewUserSuccess() {
         Mockito.doNothing().when(userValidatorMocked).userIsUnique(userMocked);
-        Mockito.when(passwordEncoderMocked.encode(anyString())).thenReturn("HashedPassword");
 
-        userRegistrationServiceMocked = new UserRegistrationService(userRepositoryMocked, passwordEncoderMocked, userValidatorMocked);
         Assertions.assertDoesNotThrow(() -> userRegistrationServiceMocked.saveNewUser(userMocked));
+        Mockito.verify(userValidatorMocked, Mockito.times(1)).userIsUnique(userMocked);
 
     }
 
     @Test
     @DisplayName("Should raise a EmailAlreadyInUseException when user tries to register")
     void saveNewUserThrowEmailAlreadyInUseException() {
-        Mockito.when(emailAlreadyInUseMocked.isEmailAreadyUsedCheck(anyString())).thenReturn(Boolean.valueOf(userMocked.email()));
-        Mockito.when(passwordEncoderMocked.encode(anyString())).thenReturn("HashedPassword");
+        Mockito.when(emailAlreadyInUseMocked.isEmailAlreadyUsedCheck(anyString())).thenReturn(Boolean.valueOf(userMocked.email()));
         Mockito.doThrow(new EmailAlreadyinUseException()).when(userValidatorMocked).userIsUnique(userMocked);
 
-        userRegistrationServiceMocked = new UserRegistrationService(userRepositoryMocked, passwordEncoderMocked, userValidatorMocked);
         Assertions.assertThrows(EmailAlreadyinUseException.class, () -> userRegistrationServiceMocked.saveNewUser(userMocked));
+        Mockito.verify(userValidatorMocked, Mockito.times(1)).userIsUnique(userMocked);
     }
 
     @Test
     @DisplayName("Should raise a UsernameAlreadyInUseException when user tries to register")
     void saveNewUserThrowUsernameAlreadyInUseException() {
-        Mockito.when(emailAlreadyInUseMocked.isEmailAreadyUsedCheck(anyString())).thenReturn(Boolean.valueOf(userMocked.userName()));
-        Mockito.when(passwordEncoderMocked.encode(anyString())).thenReturn("HashedPassword");
+        Mockito.when(emailAlreadyInUseMocked.isEmailAlreadyUsedCheck(anyString())).thenReturn(Boolean.valueOf(userMocked.userName()));
         Mockito.doThrow(new UsernameAlreadyinUseException()).when(userValidatorMocked).userIsUnique(userMocked);
 
-        userRegistrationServiceMocked = new UserRegistrationService(userRepositoryMocked, passwordEncoderMocked, userValidatorMocked);
         Assertions.assertThrows(UsernameAlreadyinUseException.class, () -> userRegistrationServiceMocked.saveNewUser(userMocked));
+        Mockito.verify(userValidatorMocked, Mockito.times(1)).userIsUnique(userMocked);
     }
 
     @Test
     @DisplayName("Should raise a InternalServerException when user tries to register")
     void saveNewUserThrowInternalServerException() {
-        Mockito.when(emailAlreadyInUseMocked.isEmailAreadyUsedCheck(anyString())).thenReturn(Boolean.valueOf(userMocked.userName()));
-        Mockito.when(passwordEncoderMocked.encode(anyString())).thenReturn("HashedPassword");
+        Mockito.when(emailAlreadyInUseMocked.isEmailAlreadyUsedCheck(anyString())).thenReturn(Boolean.valueOf(userMocked.userName()));
 
         Mockito.doThrow(new InternalServerException()).when(userValidatorMocked).userIsUnique(userMocked);
 
-        userRegistrationServiceMocked = new UserRegistrationService(userRepositoryMocked, passwordEncoderMocked, userValidatorMocked);
         Assertions.assertThrows(InternalServerException.class, () -> userRegistrationServiceMocked.saveNewUser(userMocked));
+        Mockito.verify(userValidatorMocked, Mockito.times(1)).userIsUnique(userMocked);
     }
-
 }
